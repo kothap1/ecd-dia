@@ -1,0 +1,9 @@
+{
+  "file": {
+    "description": "none",
+    "file_name": "test_fastq_per_lane/220128_A00628_0352_AHCLHFDSX3/Test01_S1_L001_R1_001.fastq.gz"
+  },
+  "read_group": {
+    "flow_cell_barcode": "220128_A00628_0352_AHCLHFDSX3"
+  }
+}

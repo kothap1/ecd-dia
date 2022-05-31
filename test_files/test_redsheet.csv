@@ -1,0 +1,13 @@
+##
+##
+##
+##
+##
+##
+##
+name_alias,flowcell_layout,subject_id,eln_sample_id,analysis_type,sample_source,disease_stage
+Test01,220128_A00628_0352_AHCLHFDSX3;220128_A00628_0353_BHCKVYDSX3,SUB007388,Pool-1324_1,Whole Genome Genomic,Healthy,IIIC
+Test02,220128_A00628_0352_AHCLHFDSX3;220128_A00628_0353_BHCKVYDSX3,SUB007389,Pool-1323_1,Whole Genome Genomic,Cancer,IIIC
+Test03,220128_A00628_0352_AHCLHFDSX3;220128_A00628_0353_BHCKVYDSX3,SUB007390,Pool-133_1,Whole Genome MethylSeq,Cancer,IIIC
+Test04,220128_A00628_0352_AHCLHFDSX3;220128_A00628_0353_BHCKVYDSX3,SUB007391,Control_000300_1_1,Whole Genome Genomic,Cancer,IIIC
+
