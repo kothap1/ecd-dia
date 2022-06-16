@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # REDCAP HPC
-# export PATH="/scratchfsx/early_cancer_detection/environment/python3_env/bin:$PATH"
 # export PATH="/scratchfsx/early_cancer_detection/environment/nxf_env/bin:$PATH"
+# export PATH="/scratchfsx/early_cancer_detection/environment/setup/multiqc/bin:$PATH"
 # export LD_LIBRARY_PATH="/scratchfsx/early_cancer_detection/environment/nxf_env/lib:$LD_LIBRARY_PATH"
+# export PATH="/scratchfsx/early_cancer_detection/environment/setup/python3/bin:$PATH"
 
 # SC1 cluster
 # export PATH="/sc1/groups/bfx-red/projects/neusomatic/strand/benchmarking/earlycancer/environment/early-cancer-detection/bin:$PATH"
@@ -11,7 +12,9 @@
 # export LD_LIBRARY_PATH="/sc1/groups/bfx-red/projects/neusomatic/strand/benchmarking/earlycancer/environment/early-cancer-detection/lib/:$LD_LIBRARY_PATH"
 
 # only for dev purpose -- {{{
-export PATH="/home/shivangi/miniconda3/envs/python3/bin/:$PATH"
+export PATH="/home/shivangi/miniconda3/envs/ecd_tools/bin:$PATH"
+export PATH="/home/shivangi/miniconda3/envs/ecd_python3/bin:$PATH"
+export PATH="/home/shivangi/miniconda3/envs/multiqc/bin:$PATH"
 rm -rf work*
 rm -rf .nextflow*
 rm -rf results*
@@ -22,7 +25,7 @@ rm -rf results*
 
 nextflow run main.nf \
 --redsheet $PWD/test_files/test_redsheet.csv \
---sampledir $PWD/test_files/test_fastq_per_lane \
+--manifestdir $PWD/test_files \
 --reference $PWD/test_files/chr22_bwa_index/chr22.fa \
 --outdir results \
 --merge_FASTQs per-lane \

@@ -1,5 +1,10 @@
 class CheckParams {
    public static void checkRequiredParams(params, log, valid_params) {
+      if (!params.user_id) { 
+         log.error "User ID not specified. This is required for manifests generated for the outputs of the pipeline."
+         System.exit(1)
+      }
+
       if (!params.samples && !params.samplename && !params.redsheet) { 
          log.error "Input sample(s) not specified!"
          System.exit(1)

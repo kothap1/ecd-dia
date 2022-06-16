@@ -9,6 +9,8 @@ include { sambamba_markdup; sambamba_merge } from './modules/tools/sambamba'
 include { mosdepth } from './modules/tools/mosdepth'
 include { picard_CollectInsertSizeMetrics; picard_CollectMultipleMetrics } from './modules/tools/picard'
 include { collateQC } from './modules/local/collateQC'
+include { multiqc } from './modules/local/multiqc'
+include { generate_manifests } from './modules/local/generateManifests'
 
 log.info """
          EARLY  CANCER  DETECTION  PIPELINE    
@@ -18,11 +20,13 @@ log.info """
          outdir           : ${params.outdir}
          merging          : ${params.merge_FASTQs}
          skip filtering   : ${params.skip_filter}
+         User             : ${params.user_id}
          """
          .stripIndent()
 
 
 workflow {
+    multiqc_config = file("$projectDir/assets/multiqc_config.yml")
     /*
     Check mandatory parameters
     */
@@ -132,14 +136,36 @@ workflow {
     // Whole genome mapping metrics
     picard_CollectMultipleMetrics(ch_markdup_bam.map {it -> [it[0], it[1]]})
 
+    ch_sample_names = ch_markdup_bam.map {it -> it[0]}.toList()
+
     // Collate QC metrics for all samples
     if (params.redsheet) {
-        collateQC(
+        collateQC (
             redsheet.getName().split("\\.")[0],
             fastp.out.fastp_qc.collect(),
             mosdepth.out.collect {it[1]},
             picard_CollectInsertSizeMetrics.out.collect {it[1]},
-            picard_CollectMultipleMetrics.out.collect {it[1]}
+            picard_CollectMultipleMetrics.out.collect {it[1]},
+            ch_sample_names
+        )
+    }
+
+    // MultiQC report for output of fastp
+    multiqc (
+        redsheet.getName().split("\\.")[0],
+        multiqc_config,
+        fastp.out.fastp_qc.collect(),
+        ch_sample_names
+    )
+
+    // Create manifests for output files - (only for the files that are retained)
+    if (redsheet && params.manifestdir) {
+        generate_manifests(
+            collateQC.out.collation_completed,
+            params.user_id,
+            redsheet,
+            params.manifestdir,
+            ch_sample_names
         )
     }
 }

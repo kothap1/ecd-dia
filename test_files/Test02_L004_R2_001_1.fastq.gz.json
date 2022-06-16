@@ -5,6 +5,51 @@
   },
   "read_group": {
     "flow_cell_barcode": "220128_A00628_0352_AHCLHFDSX3"
-  }
+  },
+  "case": {
+    "case_submitter_id": "MTLCTRL",
+    "case_id": "qypowkblhweil5pignjrph"
+  },
+  "sample": {
+    "sample_submitter_id": "Control_000338_1_2",
+    "sample_type": "Cell Lines",
+    "date_of_collection": "none",
+    "sample_id": "pdnnp6iy2wrd50at2ddlgb"
+  },
+  "analyte": {
+    "well_number": "H12"
+  },
+  "unaligned_reads": {
+    "experimental_strategy": "Bisulfite-Seq",
+    "data_category": "Sequencing Reads",
+    "data_format": "FASTQ",
+    "data_type": "Unaligned Reads",
+    "read_pair_number": "R2"
+  },
+  "aliquot": {
+    "analyte_type": "DNA",
+    "aliquot_volume": 1000.0,
+    "source_center": "",
+    "aliquot_quantity": 15.0,
+    "aliquot_submitter_id": "Control_000338_1_2_EMSeq",
+    "aliquot_id": "yroqw8r3wxai0mnwbjjt9z"
+  },
+  "diagnosis": {
+    "site_of_resection_or_biopsy": "Unknown primary site",
+    "primary_site": "Not Reported",
+    "ajcc_clinical_stage": "Unknown",
+    "primary_diagnosis": "Not Reported"
+  },
+  "demographic": {
+    "country_of_residence_at_enrollment": "",
+    "year_of_birth": 0,
+    "gender": "unknown",
+    "race": "Unknown",
+    "smoking": false
+  },
+  "type_of_operation": "CREATE",
+  "file_category": "RAW-SEQ",
+  "id": "manifest-raw-seq.json",
+  "user_id": "jason.zhu.jz7@roche.com"
 }
 

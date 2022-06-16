@@ -18,17 +18,19 @@ The FASTQ file information can be read either from the manifest files or directl
     ./setup.sh
     ```
     The script creates the environments using `yml` files. Internet access is required.
-2. In the run script, export the paths to conda environments (provided by `setup.sh`). If you are running the pipeline on REDCAP HPC system or SC1, environments are already available. 
+2. In the run script, export the paths to conda environments (provided by `setup.sh`). If you are running the pipeline on REDCAP HPC system, environments are already available. 
     - **REDCAP HPC system**:
         ```console
-        export PATH="/scratchfsx/early_cancer_detection/environment/python3_env/bin:$PATH"
+        # REDCAP HPC
         export PATH="/scratchfsx/early_cancer_detection/environment/nxf_env/bin:$PATH"
+        export PATH="/scratchfsx/early_cancer_detection/environment/setup/multiqc/bin:$PATH"
+        export PATH="/scratchfsx/early_cancer_detection/environment/setup/python3/bin:$PATH"
         ```
-    - **SC1 cluster**:
+    <!-- - **SC1 cluster**:
         ```console
         export PATH="/sc1/groups/bfx-red/projects/neusomatic/strand/benchmarking/earlycancer/environment/early-cancer-detection/bin:$PATH"
         export PATH="/sc1/groups/bfx-red/projects/neusomatic/strand/benchmarking/earlycancer/environment/python3/bin:$PATH"
-        ```
+        ``` -->
 
     > When using a compute cluster make sure to provide a shared file system path accessible from all compute nodes.
 3. Test the pipeline on minimal dataset.
@@ -53,8 +55,9 @@ The FASTQ file information can be read either from the manifest files or directl
 
     # ---- REDCAP HPC ---- #
 
-    export PATH="/scratchfsx/early_cancer_detection/environment/python3_env/bin:$PATH"
     export PATH="/scratchfsx/early_cancer_detection/environment/nxf_env/bin:$PATH"
+    export PATH="/scratchfsx/early_cancer_detection/environment/setup/multiqc/bin:$PATH"
+    export PATH="/scratchfsx/early_cancer_detection/environment/setup/python3/bin:$PATH"
 
     nextflow run main.nf \
     --redsheet <redsheet> \
@@ -155,7 +158,7 @@ The Nextflow process must run until the pipeline is finished. You can use `-bg` 
 | `--fastp_threads`             | Number of threads to pass to fastp [ `8` ]|
 | `--cut_window_size`           | **per read cutting by quality option**: the window size. Range: 1~1000. [ `5` ] |
 | `--qualified_quality_phred`   | **quality filtering option**: the quality value that a base is qualified for. Default is 20 means phred quality >=Q20 is qualified. [ `20` ] |
-| `--length_required`           | **length filtering option**: Reads shorter than length_required will be discarded [ `50` ] |
+| `--length_required`           | **length filtering option**: Reads shorter than length_required will be discarded [ `30` ] |
 > NOTE: In addition to these parameters, following parameters are provided while running the fastp command: `--detect_adapter_for_pe`, `--trim_poly_x`, `--trim_poly_g`, `--cut_tail`.
 
 ### **Alignment options**
@@ -184,7 +187,7 @@ The Nextflow process must run until the pipeline is finished. You can use `-bg` 
 | `--sambamba_threads`  | Number of threads to pass to Sambamba markdup [ `28` ]|
 | `--overflow_list_size`| Size of the overflow list where reads, thrown away from the hash table, get a second chance to meet their pairs); increasing the size reduces the number of temporary files created. [ `2000000` ] |
 | `--remove_duplicates` | Remove duplicates instead of just marking them [ `false` ]|
-| `--tmpdir`            | Path to tmp directory [ `'/rawfsx/early_cancer_test_runs/tmp'` ] |
+| `--tmpdir`            | Path to tmp directory [ `'/rawfsx2/early_cancer_test_runs/tmp'` ] |
 
 ### **Coverage calculation options**
 |  |  |
@@ -204,6 +207,12 @@ Fragment length distribution is calculated by _Picard CollectInsertSizeMetrics_.
 | `--MULTI_METRICS_PROGRAMS`| Modules to pass to Picard CollectMultipleMetrics [ `CollectAlignmentSummaryMetrics,QualityScoreDistribution,CollectGcBiasMetrics` ] |
 > NOTE:  `-VALIDATION_STRINGENCY SILENT` is provided while running the command.
 
+### **User options**
+|  |  |
+| -------------------- | ----------- |
+| `--user_id`      | Email ID of the user running the pipeline. This is required for manifests generated for the outputs. |
+
+
 **Advanced Parameters**
 
 Advanced options like changing the directory for results from a specific step, passing additional parameters to a specific tool etc. can be configured from the `configs/modules.config` file.
@@ -216,8 +225,11 @@ Users will not be able to configure these parameters from the command line direc
 
 | Directory | Output by | Files | Description |
 | --------- | --------- | ----- | ----------- |
-| `01_QC_reports`| `fastp`, `mosdepth` and `picard` | fastp: json <br> mosdepth: txt <br> picard_CollectInsertSizeMetrics: txt <br> picard_CollectMultipleMetrics: txt | QC reports from different tools |
+| `01_QC_reports`| `fastp`, `mosdepth`, and `picard` | fastp: json <br> mosdepth: txt <br> picard_CollectInsertSizeMetrics: txt <br> picard_CollectMultipleMetrics: txt | QC reports from different tools |
 | `01_QC_reports/batch_qc`| Jupyter Notebook for QC collation | HTML, xlsx | collated QC reports from different tools for samples processed from the redsheet |
+| `01_QC_reports/multiqc`| MultiQC | HTML | MultiQC report generated for outputs of fastp |
 | `02_dups_marked_reads`| `Sambamba markdup` | bam, bai | Duplicates marked reads |
+| `03_manifests`| `Python script` | json | Manifest files for outputs the of the pipeline |
 | `pipeline_info`| `Nextflow` | HTML, txt | Execution reports |
 
+> NOTE: For outputs of the steps QC collation and MultiQC, multiple copies (sample-wise) of the same files are created to meet the requirement for the REDCAP ingestion system. In actual, 1 multiqc report and 2 QC collation reports are generated per redsheet/per run.
